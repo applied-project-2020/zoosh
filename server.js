@@ -9,9 +9,8 @@ const path = require("path")
 
 require('dotenv').config();
 
-
 // Port Environment variable
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 // Access cluster through link
 const mongoDB = process.env.MONGO_DB;
@@ -35,7 +34,7 @@ app.use(function (req, res, next) {
 });
 
 if(process.env.NODE_ENV === 'production') {
-    app.use(express.static('./Client/build')
+    app.use(express.static('./Client/build'));
 }
 
 // parse application/x-www-form-urlencoded
