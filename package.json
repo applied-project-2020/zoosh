@@ -27,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm instal  l && npm run build"
+    "heroku-postbuild": "cd ./Client && npm install --only=dev && npm instal  l && npm run build"
   },
   "engines": {
     "node": "12.19.0"
