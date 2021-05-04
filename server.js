@@ -34,7 +34,9 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(express.static(path.join(__dirname, "Client", "build")))
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(.Client/build))
+}
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({

@@ -126,6 +126,10 @@ export default class MyProfile extends React.Component {
       });
   }
 
+  Logout() {
+    localStorage.clear();
+  }
+
   render() {
     var title = this.state.user.fullname + " - Website"
 
@@ -159,7 +163,8 @@ export default class MyProfile extends React.Component {
                   <section class="bio-box">
                    <dl class="details"> 
                     <b className="user-name">{this.state.user.fullname}</b><a href="/settings"><button className="community-btn-a" >Edit Profile</button></a>
-                    <a href="/saved"><button className="community-btn-a" ><BsBookmarkFill size={20}/></button></a><br/>
+                    <a href="/saved"><button className="community-btn-a" ><BsBookmarkFill size={20}/></button></a>
+                    <a href="/login"><button className="community-btn-s" onClick={() => { this.Logout() }}><BsBookmarkFill size={20}/>Sign Out</button></a><br/>
 
                     <b>@{this.state.user.username}</b> <br/>
                     <span className="user-badge"><BsFillCircleFill/> Member</span>
