@@ -103,7 +103,7 @@ export default class NewPost extends React.Component {
   }
 
   getUserSocieties() {
-    axios.get('http://localhost:4000/societies/get-users-societies', {
+    axios.get('http://localhost:5000/societies/get-users-societies', {
       params: {
         id: this.user._id,
       }
@@ -142,7 +142,7 @@ export default class NewPost extends React.Component {
 
     if (this.state.full_picture) {
       formData.append('picture', this.state.full_picture, this.state.full_picture.name);
-      await axios.post('http://localhost:4000/discussions/picture-upload', formData, {
+      await axios.post('http://localhost:5000/discussions/picture-upload', formData, {
         headers: {
           'accept': 'application/json',
           'Accept-Language': 'en-US,en;q=0.8',
@@ -186,7 +186,7 @@ export default class NewPost extends React.Component {
 
           newPost.full_pic = response.data.location;
           
-          axios.post('http://localhost:4000/discussions/NewDiscussions', newPost)
+          axios.post('http://localhost:5000/discussions/NewDiscussions', newPost)
             .then()
             .catch();
         })
@@ -194,7 +194,7 @@ export default class NewPost extends React.Component {
 
         });
     } else {
-      axios.post('http://localhost:4000/discussions/NewDiscussions', newPost)
+      axios.post('http://localhost:5000/discussions/NewDiscussions', newPost)
         .then()
         .catch();
     }

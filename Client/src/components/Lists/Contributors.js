@@ -9,7 +9,7 @@ import { BsCircleFill } from 'react-icons/bs';
 class Contributors extends React.Component {
 
  componentDidMount = () => {
-        axios.get('http://localhost:4000/users/get-users-radar')
+        axios.get('http://localhost:5000/users/get-users-radar')
         .then((response)=>{
             this.setState({users: response.data.users})
         })

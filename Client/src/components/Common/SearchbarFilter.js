@@ -55,7 +55,7 @@ export default class SearchbarFilter extends React.Component {
   }
 
   GetUsers() {
-    axios.get('http://localhost:4000/users/get-users', {
+    axios.get('http://localhost:5000/users/get-users', {
       params: {
         fields: '_id fullname'
       }
@@ -70,7 +70,7 @@ export default class SearchbarFilter extends React.Component {
       });
   }
   GetSocieties() {
-    axios.get('http://localhost:4000/societies/get-societies', {
+    axios.get('http://localhost:5000/societies/get-societies', {
       params: {
         fields: '_id name'
       }
@@ -86,7 +86,7 @@ export default class SearchbarFilter extends React.Component {
   }
 
   GetDiscussions() {
-    axios.get('http://localhost:4000/discussions/get-discussions', {
+    axios.get('http://localhost:5000/discussions/get-discussions', {
       params: {
         fields: '_id title society'
       }

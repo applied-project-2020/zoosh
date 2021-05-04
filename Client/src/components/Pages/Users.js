@@ -25,7 +25,7 @@ export default class ListSocieties extends React.Component {
 
   async componentDidMount() {
     
-    await axios.get('http://localhost:4000/users/get-users-list')
+    await axios.get('http://localhost:5000/users/get-users-list')
       .then((response) => {
         console.log(response);
         this.setState({

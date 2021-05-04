@@ -44,7 +44,7 @@ export default class AdminPage extends React.Component {
       var user = JSON.parse(localStorage.getItem('user'));
       this.setState({ id: user._id });
 
-      axios.get('http://localhost:4000/users/getUsers')
+      axios.get('http://localhost:5000/users/getUsers')
       .then((response)=>{
           this.setState({users: response.data.users})
       })
@@ -53,7 +53,7 @@ export default class AdminPage extends React.Component {
       });
 
       
-     await axios.get('http://localhost:4000/societies/get-societies-page', {
+     await axios.get('http://localhost:5000/societies/get-societies-page', {
         params: {
           id: society_id
         }
@@ -77,7 +77,7 @@ export default class AdminPage extends React.Component {
         } 
 
 
-        axios.get('http://localhost:4000/discussions/get-society-discussions',{
+        axios.get('http://localhost:5000/discussions/get-society-discussions',{
           params: {
             society: this.state.society.name
           }
@@ -92,7 +92,7 @@ export default class AdminPage extends React.Component {
     }
 
      async  GetFollowedUser(user_id){
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
         params: {
           id:user_id
         }
@@ -126,9 +126,9 @@ export default class AdminPage extends React.Component {
     }
     alert("Removed user "+user_id)
    
-        axios.post('http://localhost:4000/societies/deleteUser',deletedUser)
+        axios.post('http://localhost:5000/societies/deleteUser',deletedUser)
         .then().catch();
-        axios.post('http://localhost:4000/users/deleteSoc',deletedSoc)
+        axios.post('http://localhost:5000/users/deleteSoc',deletedSoc)
         .then().catch();
 
 
@@ -147,7 +147,7 @@ export default class AdminPage extends React.Component {
         _id:user_id       
         }
         alert("Mod added "+user_id)
-          axios.post('http://localhost:4000/societies/addMod',Moderator)
+          axios.post('http://localhost:5000/societies/addMod',Moderator)
           .then().catch();
           window.location = '/s/?id='+Soc_id;
           }

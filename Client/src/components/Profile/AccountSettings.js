@@ -49,7 +49,7 @@ export default class AccountSettings extends React.Component {
     this.setState({ id: this.user._id });
 
 
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: this.user._id
       }
@@ -161,7 +161,7 @@ export default class AccountSettings extends React.Component {
       password: password
     };
 
-    axios.post('http://localhost:4000/users/edit-user-profile', updateUser)
+    axios.post('http://localhost:5000/users/edit-user-profile', updateUser)
       .then()
       .catch(console.log("error"))
 

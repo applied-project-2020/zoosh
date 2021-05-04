@@ -43,7 +43,7 @@ export default class Feed extends React.Component {
   // Fetching the users Details
   getUserDetails() {
       var user = JSON.parse(localStorage.getItem('user'));
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
         params: {
           id: user._id,
           fields: 'forums societies likedPosts username pic'
@@ -76,7 +76,7 @@ export default class Feed extends React.Component {
   {
     var user = JSON.parse(localStorage.getItem('user'));
 
-    axios.get('http://localhost:4000/users/get-followed-users', {
+    axios.get('http://localhost:5000/users/get-followed-users', {
       params: {
         id: user._id,
       }
@@ -96,7 +96,7 @@ export default class Feed extends React.Component {
   // Gets the posts made by the array of followed user ID's
   GetFollowingPosts()
   {
-    axios.get('http://localhost:4000/discussions/get-following-feed', {
+    axios.get('http://localhost:5000/discussions/get-following-feed', {
       params: {
         ids: this.state.following
       },
@@ -135,7 +135,7 @@ export default class Feed extends React.Component {
       Post_id: post_id
     }
     alert(post_id);
-    axios.post('http://localhost:4000/users/deletePost', deletedPost)
+    axios.post('http://localhost:5000/users/deletePost', deletedPost)
       .then().catch();
   }
 

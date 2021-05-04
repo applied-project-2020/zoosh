@@ -27,7 +27,7 @@ export default class Two extends React.Component {
 
       var user = JSON.parse(localStorage.getItem('user'));
   
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
         params: {
           id: user._id,
           fields: 'fullname pic societies forums'
@@ -44,7 +44,7 @@ export default class Two extends React.Component {
           console.log(error);
         });
   
-        axios.get('http://localhost:4000/societies/get-societies', {
+        axios.get('http://localhost:5000/societies/get-societies', {
           params: {
             fields: 'name picture users score',
             limit: 10
@@ -58,7 +58,7 @@ export default class Two extends React.Component {
             console.log(error);
         });
   
-        axios.get('http://localhost:4000/users/get-users', {
+        axios.get('http://localhost:5000/users/get-users', {
           params: {
             fields: 'pic fullname score'
           }

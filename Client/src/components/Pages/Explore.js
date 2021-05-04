@@ -28,7 +28,7 @@ export default class Explore extends React.Component {
       var user = JSON.parse(localStorage.getItem('user'));
       this.setState({ id: user._id });
 
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
           params: {
               id: user._id
           }
@@ -45,7 +45,7 @@ export default class Explore extends React.Component {
             console.log(error);
         });
     
-        axios.get('http://localhost:4000/societies/get-societies', {
+        axios.get('http://localhost:5000/societies/get-societies', {
           params: {
             fields: 'name picture color description users'
           }
@@ -198,7 +198,7 @@ function QuickOptions() {
       }
   
       // Adds user ID to users array in society model.
-      await axios.post('http://localhost:4000/societies/update', addUser.user)
+      await axios.post('http://localhost:5000/societies/update', addUser.user)
           .then(function (resp) {
               console.log(resp);
               //alert("Successfully joined " + soc);
@@ -209,7 +209,7 @@ function QuickOptions() {
   
   
       // Adds society ID to societies array in user model.
-      await axios.post('http://localhost:4000/users/addToSocList', addUser.society)
+      await axios.post('http://localhost:5000/users/addToSocList', addUser.society)
           .then(function (resp) {
               console.log(resp);
   

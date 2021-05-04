@@ -42,7 +42,7 @@ export default class Landing extends React.Component {
   // Fetching the users Details
   async getUserDetails() {
     var user = JSON.parse(localStorage.getItem('user'));
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id
       }
@@ -64,7 +64,7 @@ export default class Landing extends React.Component {
   // Fetching the discussions
   async getDiscussions() {
     var user = JSON.parse(localStorage.getItem('user'));
-    await axios.get('http://localhost:4000/discussions/get-discussions', {
+    await axios.get('http://localhost:5000/discussions/get-discussions', {
       params: {
         fields: 'user society time thumbnail_pic title content likes comments',
         sort: 'likes',

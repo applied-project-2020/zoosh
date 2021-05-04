@@ -17,7 +17,7 @@ export default class Recommended extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:4000/societies/get-explore-societies')
+    axios.get('http://localhost:5000/societies/get-explore-societies')
       .then((response) => {
         this.setState({ societies: response.data.societies })
       })
@@ -101,7 +101,7 @@ render(){
     }
 
     // Adds user to users array in society model.
-    await axios.post('http://localhost:4000/societies/update', addUser)
+    await axios.post('http://localhost:5000/societies/update', addUser)
         .then(function (resp) {
             console.log(resp);
             //alert("Successfully joined " + soc);
@@ -112,7 +112,7 @@ render(){
 
 
     // Adds society to societies array in user model.
-    await axios.post('http://localhost:4000/users/addToSocList', addUser)
+    await axios.post('http://localhost:5000/users/addToSocList', addUser)
         .then(function (resp) {
             console.log(resp);
 

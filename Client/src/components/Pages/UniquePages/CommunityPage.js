@@ -36,7 +36,7 @@ export default class CommunityPage extends React.Component {
     var society_id = new URLSearchParams(this.props.location.search).get("id");
     var user = JSON.parse(localStorage.getItem('user'));
 
-    await axios.get('http://localhost:4000/societies/get-societies-page', {
+    await axios.get('http://localhost:5000/societies/get-societies-page', {
       params: {
         id: society_id
       }
@@ -55,7 +55,7 @@ export default class CommunityPage extends React.Component {
       });
 
   // Get user details to check for the community ID
-  await axios.get('http://localhost:4000/users/get-user-details', {
+  await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'societies'
@@ -72,7 +72,7 @@ export default class CommunityPage extends React.Component {
       });
 
 
-  await axios.get('http://localhost:4000/discussions/get-society-discussions', {
+  await axios.get('http://localhost:5000/discussions/get-society-discussions', {
     params: {
       society: this.state.society.name,
       fields: 'user society time thumbnail_pic title content likes comments user_id',
@@ -107,7 +107,7 @@ export default class CommunityPage extends React.Component {
     }
 
     // Adds user to users array in society model.
-    await axios.post('http://localhost:4000/societies/update', addUser)
+    await axios.post('http://localhost:5000/societies/update', addUser)
       .then(function (resp) {
         console.log(resp);
         cogoToast.success("Followed", { position: 'bottom-center' });
@@ -118,7 +118,7 @@ export default class CommunityPage extends React.Component {
 
 
     // Adds society to societies array in user model.
-    await axios.post('http://localhost:4000/users/addToSocList', addUser)
+    await axios.post('http://localhost:5000/users/addToSocList', addUser)
       .then(function (resp) {
         console.log(resp);
 

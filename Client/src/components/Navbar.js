@@ -31,7 +31,7 @@ export default class NavBar extends React.Component {
       this.setState({ id: user._id });
 
 
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
           params: {
               id: user._id,
               fields: 'pic fullname'

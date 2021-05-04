@@ -60,7 +60,7 @@ export default class UserProfile extends React.Component {
 
     // document.body.style.backgroundColor = "#F7F7F7";
 
-    await axios.get(`http://localhost:4000/users/get-user-details`, {
+    await axios.get(`http://localhost:5000/users/get-user-details`, {
       params: {
         id: user_id,
         fields: 'fullname username followers following posts likedPosts pic societies badges college time score'
@@ -86,7 +86,7 @@ export default class UserProfile extends React.Component {
 
     var user = JSON.parse(localStorage.getItem('user'));
 
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'following '
@@ -103,7 +103,7 @@ export default class UserProfile extends React.Component {
       });
 
 
-    axios.get('http://localhost:4000/discussions/get-user-discussions', {
+    axios.get('http://localhost:5000/discussions/get-user-discussions', {
       params: {
         id: user_id,
         fields: 'user society time thumbnail_pic title content likes comments user_id',
@@ -128,7 +128,7 @@ export default class UserProfile extends React.Component {
     // Loops through society ID's and gets the data for each society.
     if(this.state.society_ids != undefined) {
       this.state.society_ids.map(society_id => (
-        axios.get('http://localhost:4000/societies/get-societies-page', {
+        axios.get('http://localhost:5000/societies/get-societies-page', {
           params: {
             id: society_id
           }
@@ -149,7 +149,7 @@ export default class UserProfile extends React.Component {
   }
 
   async GetLikedPost(DiscussionID) {
-    await axios.get('http://localhost:4000/discussions/get-discussion-page', {
+    await axios.get('http://localhost:5000/discussions/get-discussion-page', {
       params: {
         id: DiscussionID,
       }
@@ -196,7 +196,7 @@ export default class UserProfile extends React.Component {
     }
 
     // Adds user to following array in user model.
-    axios.post('http://localhost:4000/users/unfollow', myUser)
+    axios.post('http://localhost:5000/users/unfollow', myUser)
       //add to following array
       .then(function (resp) {
         console.log(resp);
@@ -205,7 +205,7 @@ export default class UserProfile extends React.Component {
         console.log(error);
       })
 
-    axios.post('http://localhost:4000/users/DeleteFollower', followUser)
+    axios.post('http://localhost:5000/users/DeleteFollower', followUser)
       //add to following array
       .then(function (resp) {
         console.log(resp);
@@ -232,7 +232,7 @@ export default class UserProfile extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/users/removeFromLikedPosts', removeDiscussion)
+    axios.post('http://localhost:5000/users/removeFromLikedPosts', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -381,7 +381,7 @@ function addUserToFollow(user) {
     
 }
 // Adds the discussion to liked list
-axios.post('http://localhost:4000/notifications/notify', notify)
+axios.post('http://localhost:5000/notifications/notify', notify)
     .then(function (resp) {
         console.log(resp);
     })
@@ -391,7 +391,7 @@ axios.post('http://localhost:4000/notifications/notify', notify)
 
 
   // Adds user to following array in user model.
-  axios.post('http://localhost:4000/users/addToFollowingList', myUser)
+  axios.post('http://localhost:5000/users/addToFollowingList', myUser)
     //add to following array
     .then(function (resp) {
       console.log(resp);
@@ -402,7 +402,7 @@ axios.post('http://localhost:4000/notifications/notify', notify)
 
 
   // Adds user to followers array in users model.
-  axios.post('http://localhost:4000/users/updateFollowers', followUser)
+  axios.post('http://localhost:5000/users/updateFollowers', followUser)
     .then(function (resp) {
       console.log(resp);
       console.log(followUser);

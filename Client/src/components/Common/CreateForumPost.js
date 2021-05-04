@@ -33,7 +33,7 @@ componentDidMount() {
     this.setState({user: user.fullname});
 
   // Get all users from database.
-  axios.get('http://localhost:4000/users/getUsers')
+  axios.get('http://localhost:5000/users/getUsers')
     .then((response) => {
       this.setState({ users: response.data.users })
     })
@@ -76,7 +76,7 @@ componentDidMount() {
         tags: this.state.tags,
       }
 
-    axios.post('http://localhost:4000/forums/NewPost', newPost)
+    axios.post('http://localhost:5000/forums/NewPost', newPost)
       .then()
       .catch();
     

@@ -28,7 +28,7 @@ export default class Forum extends React.Component {
       var user = JSON.parse(localStorage.getItem('user'));
       this.setState({ id: user._id });
 
-      axios.get('http://localhost:4000/forums/get-forum-page', {
+      axios.get('http://localhost:5000/forums/get-forum-page', {
         params: {
           id: forum_id
         }
@@ -43,7 +43,7 @@ export default class Forum extends React.Component {
           console.log(error);
         });
 
-      axios.get('http://localhost:4000/forums/getForumPosts')
+      axios.get('http://localhost:5000/forums/getForumPosts')
         .then((response) => {
           this.setState({ 
             forums: response.data.forums,
@@ -55,7 +55,7 @@ export default class Forum extends React.Component {
         });
       
 
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
           params: {
             id: user._id
           }

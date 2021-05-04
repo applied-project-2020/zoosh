@@ -27,7 +27,7 @@ export default class History extends React.Component {
       user_id = user._id;
     }
 
-    await axios.get('http://localhost:4000/discussions/get-user-discussions', {
+    await axios.get('http://localhost:5000/discussions/get-user-discussions', {
       params: {
         id: user_id,
         fields: 'user society time thumbnail_pic title content likes comments user_id',
@@ -56,14 +56,14 @@ export default class History extends React.Component {
     }
   }
   onDeletePost(id, discussion_id) {
-    axios.delete('http://localhost:4000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
+    axios.delete('http://localhost:5000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
       .then()
       .catch();
 
     const RemovedDiscussion = {
       discussion_id: discussion_id
     }
-    axios.post('http://localhost:4000/users/removeFromReadingList', RemovedDiscussion)
+    axios.post('http://localhost:5000/users/removeFromReadingList', RemovedDiscussion)
       .then().catch();
     window.location.reload(); //refreshes page automatically 
 

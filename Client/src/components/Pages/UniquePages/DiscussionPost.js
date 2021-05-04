@@ -41,7 +41,7 @@ export default class DiscussionPost extends React.Component {
     var id = new URLSearchParams(this.props.location.search).get("id");
 
     this.getUserDetails();
-    axios.get('http://localhost:4000/discussions/get-discussion-page', {
+    axios.get('http://localhost:5000/discussions/get-discussion-page', {
       params: {
         id: id,
       }
@@ -61,7 +61,7 @@ export default class DiscussionPost extends React.Component {
   }
   async getUserDetails() {
     var user = JSON.parse(localStorage.getItem('user'));
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: "likedPosts readingList"
@@ -101,7 +101,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:4000/users/addToReadingList', addDiscussion)
+    axios.post('http://localhost:5000/users/addToReadingList', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -122,7 +122,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:4000/users/removeFromReadingList', RemovedDiscussion)
+    axios.post('http://localhost:5000/users/removeFromReadingList', RemovedDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -147,7 +147,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/users/addToLikedPosts', addDiscussion)
+    axios.post('http://localhost:5000/users/addToLikedPosts', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -167,7 +167,7 @@ export default class DiscussionPost extends React.Component {
       time: new Date().getTime()
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/notifications/notify', notify)
+    axios.post('http://localhost:5000/notifications/notify', notify)
       .then(function (resp) {
         console.log(resp);
       })
@@ -180,7 +180,7 @@ export default class DiscussionPost extends React.Component {
       likeCount: likes + 1
     }
     // alert(this.state.posts.likes);
-    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -197,7 +197,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/users/removeFromLikedPosts', removeDiscussion)
+    axios.post('http://localhost:5000/users/removeFromLikedPosts', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -208,7 +208,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
       likeCount: likes - 1
     }
-    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -241,11 +241,11 @@ export default class DiscussionPost extends React.Component {
       message: "commented on post",
       time: new Date().getTime()
     }
-    axios.post('http://localhost:4000/discussions/CreateComment', newComment)
+    axios.post('http://localhost:5000/discussions/CreateComment', newComment)
       .then()
       .catch();
 
-    axios.post('http://localhost:4000/notifications/notify', notify)
+    axios.post('http://localhost:5000/notifications/notify', notify)
       .then()
       .catch();
     window.location.reload();

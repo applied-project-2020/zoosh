@@ -33,7 +33,7 @@ export default class Notifications extends React.Component {
     var user = JSON.parse(localStorage.getItem('user'));
     this.getUserDetails();
 
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: "notifications username pic"
@@ -53,7 +53,7 @@ export default class Notifications extends React.Component {
       });
     
     // Fetching the users notifications by searching the Notifications Model for documents containing the logged in users ID
-    await axios.get('http://localhost:4000/notifications/get-user-notifications', {
+    await axios.get('http://localhost:5000/notifications/get-user-notifications', {
         params: {
           notify_id: user._id,
           fields: 'user_id user_name user_pic time message discussion_id discussion_title ',
@@ -79,7 +79,7 @@ export default class Notifications extends React.Component {
     // Fetching the users Details
     getUserDetails() {
       var user = JSON.parse(localStorage.getItem('user'));
-      axios.get('http://localhost:4000/users/get-user-details', {
+      axios.get('http://localhost:5000/users/get-user-details', {
         params: {
           id: user._id,
           fields: 'forums societies likedPosts username pic'
@@ -100,7 +100,7 @@ export default class Notifications extends React.Component {
 
   deleteNotification(id){
 
-      axios.get('http://localhost:4000/notifications/deleteNotification',{
+      axios.get('http://localhost:5000/notifications/deleteNotification',{
         params: {
           _id:id,   
         }    
@@ -110,7 +110,7 @@ export default class Notifications extends React.Component {
 
 deleteAllNotification(){
   var user = JSON.parse(localStorage.getItem('user'));
-    axios.get('http://localhost:4000/notifications/deleteAllNotifications',{
+    axios.get('http://localhost:5000/notifications/deleteAllNotifications',{
       params: {
         id:user._id,   
       }    

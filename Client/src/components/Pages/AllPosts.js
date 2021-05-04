@@ -51,7 +51,7 @@ export default class AllPosts extends React.Component {
   // Fetching the users Details
   getUserDetails() {
     var user = JSON.parse(localStorage.getItem('user'));
-    axios.get('http://localhost:4000/users/get-user-details', {
+    axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'forums societies likedPosts username pic'
@@ -72,7 +72,7 @@ export default class AllPosts extends React.Component {
 
   // Fetching the discussions from MongoDB Atlas
   getDiscussions() {
-    axios.get('http://localhost:4000/discussions/get-discussions', {
+    axios.get('http://localhost:5000/discussions/get-discussions', {
       params: {
         fields: 'username user_id society time full_pic user_pic title content likes comments',
         sort: 'likes'
@@ -102,7 +102,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion._id,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:4000/users/addToReadingList', addDiscussion)
+    axios.post('http://localhost:5000/users/addToReadingList', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -144,14 +144,14 @@ export default class AllPosts extends React.Component {
 
 
   onDeletePost(id, discussion_id) {
-    axios.delete('http://localhost:4000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
+    axios.delete('http://localhost:5000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
       .then()
       .catch();
 
     const RemovedDiscussion = {
       discussion_id: discussion_id
     }
-    axios.post('http://localhost:4000/users/removeFromReadingList', RemovedDiscussion)
+    axios.post('http://localhost:5000/users/removeFromReadingList', RemovedDiscussion)
       .then().catch();
     window.location.reload(); //refreshes page automatically 
 
@@ -164,7 +164,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/users/addToLikedPosts', addDiscussion)
+    axios.post('http://localhost:5000/users/addToLikedPosts', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -175,7 +175,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
       likeCount: likes + 1
     }
-    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -192,7 +192,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:4000/users/removeFromLikedPosts', removeDiscussion)
+    axios.post('http://localhost:5000/users/removeFromLikedPosts', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -203,7 +203,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
       likeCount: likes - 1
     }
-    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })

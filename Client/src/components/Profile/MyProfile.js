@@ -37,7 +37,7 @@ export default class MyProfile extends React.Component {
     var user = JSON.parse(localStorage.getItem('user'));
     // document.body.style.backgroundColor = "#F7F7F7";
 
-    await axios.get('http://localhost:4000/users/get-user-details', {
+    await axios.get('http://localhost:5000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'fullname username followers following likedPosts pic societies badges college time score'
@@ -61,7 +61,7 @@ export default class MyProfile extends React.Component {
         console.log(error);
       });
 
-    axios.get('http://localhost:4000/discussions/get-user-discussions', {
+    axios.get('http://localhost:5000/discussions/get-user-discussions', {
       params: {
         id: user._id,
         fields: 'user society time thumbnail_pic title content likes comments user_id',
@@ -91,7 +91,7 @@ export default class MyProfile extends React.Component {
 
     // Loops through society ID's and gets the data for each society.
     this.state.society_ids.map(society_id => (
-      axios.get('http://localhost:4000/societies/get-societies-page', {
+      axios.get('http://localhost:5000/societies/get-societies-page', {
         params: {
           id: society_id
         }
@@ -105,7 +105,7 @@ export default class MyProfile extends React.Component {
 
   async GetLikedPost(DiscussionID) {
     console.log("disc id = " + DiscussionID);
-    await axios.get('http://localhost:4000/discussions/get-discussion-page', {
+    await axios.get('http://localhost:5000/discussions/get-discussion-page', {
       params: {
         id: DiscussionID,
       }

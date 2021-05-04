@@ -111,7 +111,7 @@ export default class CreateASoc extends React.Component {
             color: this.state.color
         };
 
-        axios.post('http://localhost:4000/societies/create', newSoc)
+        axios.post('http://localhost:5000/societies/create', newSoc)
                 .then(function(resp) {
                     console.log(resp);
                 })

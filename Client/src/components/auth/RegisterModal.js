@@ -70,7 +70,7 @@ class RegisterModal extends React.Component {
       console.log('Invalid Parameters');
     } else {
 
-      axios.post('http://localhost:4000/users/register', newUser)
+      axios.post('http://localhost:5000/users/register', newUser)
         .then()
         .catch(console.log("error"))
 
