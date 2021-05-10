@@ -9,13 +9,14 @@ import 'react-calendar/dist/Calendar.css';
 import moment from 'moment'
 import Skeleton from 'react-loading-skeleton';
 import Button from '@material-ui/core/Button';
-import { BsBell, BsChat, BsGem, BsArrowUp, BsHouse, BsHeart, BsBarChartFill } from 'react-icons/bs'
+import { BsBell, BsChat, BsSearch, BsArrowUp, BsHouse, BsHeart, BsBarChartFill } from 'react-icons/bs'
 import { RiDeleteBinLine } from 'react-icons/ri'
 import ScrollToTop from 'react-scroll-up'
 import { Helmet } from 'react-helmet'
-import {BiRocket} from 'react-icons/bi'
+import { BiRocket } from 'react-icons/bi'
 import NewPost from './NewPost';
-import Avatar from '@material-ui/core/Avatar';
+import {AiOutlineTrophy} from 'react-icons/ai'
+import Default from '../../images/defaults/default5.jpg'
 
 export default class AllPosts extends React.Component {
 
@@ -51,7 +52,7 @@ export default class AllPosts extends React.Component {
   // Fetching the users Details
   getUserDetails() {
     var user = JSON.parse(localStorage.getItem('user'));
-    axios.get('http://localhost:5000/users/get-user-details', {
+    axios.get('http://localhost:4000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'forums societies likedPosts username pic'
@@ -72,9 +73,9 @@ export default class AllPosts extends React.Component {
 
   // Fetching the discussions from MongoDB Atlas
   getDiscussions() {
-    axios.get('http://localhost:5000/discussions/get-discussions', {
+    axios.get('http://localhost:4000/discussions/get-discussions', {
       params: {
-        fields: 'username user_id society time full_pic user_pic title content likes comments',
+        fields: 'user user_id society time full_pic user_pic title content likes comments',
         sort: 'likes'
       }
     })
@@ -102,7 +103,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion._id,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:5000/users/addToReadingList', addDiscussion)
+    axios.post('http://localhost:4000/users/addToReadingList', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -144,14 +145,14 @@ export default class AllPosts extends React.Component {
 
 
   onDeletePost(id, discussion_id) {
-    axios.delete('http://localhost:5000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
+    axios.delete('http://localhost:4000/discussions/getDiscussions' + discussion_id) //deletes a discussion by ID
       .then()
       .catch();
 
     const RemovedDiscussion = {
       discussion_id: discussion_id
     }
-    axios.post('http://localhost:5000/users/removeFromReadingList', RemovedDiscussion)
+    axios.post('http://localhost:4000/users/removeFromReadingList', RemovedDiscussion)
       .then().catch();
     window.location.reload(); //refreshes page automatically 
 
@@ -164,7 +165,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/users/addToLikedPosts', addDiscussion)
+    axios.post('http://localhost:4000/users/addToLikedPosts', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -175,7 +176,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
       likeCount: likes + 1
     }
-    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -192,7 +193,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/users/removeFromLikedPosts', removeDiscussion)
+    axios.post('http://localhost:4000/users/removeFromLikedPosts', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -203,7 +204,7 @@ export default class AllPosts extends React.Component {
       discussion: discussion,
       likeCount: likes - 1
     }
-    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -220,31 +221,35 @@ export default class AllPosts extends React.Component {
       console.log(discussion);
       return (
         <Fragment key={discussion._id}>
-        <a href={"/d/?id=" + discussion._id} className="miniprofile-post-redirect"><div class="card">
-          {discussion.full_pic === null && <div></div>}
-          {discussion.full_pic != null && <Image src={discussion.full_pic} className="post-img"/>}
-          <div class="container">
-            <h2><b>{discussion.title}</b></h2> 
-            <p className="nowrap"> <Image alt="" className="profile-btn-wrapper-left" src={discussion.user_pic}  roundedCircle /><b> @{discussion.username}</b></p> 
-            <span>Posted in <b style={{ color: 'rgb(52,199,89)' }}>
-            {discussion.society == null ? (
-              <span> <b style={{color: 'rgb(52,199,89)' }}>General</b></span>
-               ) : (
-              <span> <b style={{ color: 'rgb(52,199,89)' }}>{discussion.society}</b></span>
-              )}<br />
-              </b></span><br/>
-            <span style={{ color: 'gray', fontSize: 10 }}>({moment(discussion.time).startOf('seconds').fromNow()})</span><br/>
-            <span className="reactions">
-              <a href={"/d/?id=" + discussion._id}><button className="reaction-button" size="small" color="primary">
-                <span><BsHeart size={20} alt=""  className="icon"/> {discussion.likes}</span>
-              </button></a>
+          <a href={"/d/?id=" + discussion._id} className="miniprofile-post-redirect"><div class="card">
+            {discussion.full_pic === null && <div></div>}
+            {discussion.full_pic != null && <Image src={discussion.full_pic} className="post-img" />}
+            <div class="container">
+              <h2><b>{discussion.title}</b></h2>
+
+              <span><p className="nowrap"> 
+                {(discussion.user_pic != "" && discussion.user_pic != null) && <Image alt="" className="profile-btn-wrapper-left" src={discussion.user_pic} roundedCircle />}
+                {(discussion.user_pic == "" || discussion.user_pic == null) && <Image alt="" className="profile-btn-wrapper-left" src={Default} roundedCircle />}
+              </p> 
+              <b> {discussion.user}</b> Posted in <b style={{ color: 'rgb(52,199,89)' }}>
+                {discussion.society == null ? (
+                  <span> <b style={{ color: 'rgb(52,199,89)' }}>General</b></span>
+                ) : (
+                  <span> <b style={{ color: 'rgb(52,199,89)' }}>{discussion.society}</b></span>
+                )}<br />
+              </b></span><br />
+              <span style={{ color: 'gray', fontSize: 10 }}>({moment(discussion.time).startOf('seconds').fromNow()})</span><br /><hr />
+              <span className="reactions">
+                <a href={"/d/?id=" + discussion._id}><button className="reaction-button" size="small" color="primary">
+                  <span><BsHeart size={20} alt="" className="icon" /> {discussion.likes}</span>
+                </button></a>
 
 
                 <a href={"/d/?id=" + discussion._id}><button className="reaction-button" size="small" color="primary">
-                  <span><BsChat size={20}  className="icon"/> {discussion.comments.length}</span>
+                  <span><BsChat size={20} className="icon" /> {discussion.comments.length}</span>
                 </button></a>
-          </span></div>
-        </div></a><br/>
+              </span></div>
+          </div></a><br />
         </Fragment>
       )
     })
@@ -266,33 +271,35 @@ export default class AllPosts extends React.Component {
           <link rel="apple-touch-icon" sizes="72x72" href="http://mysite.com/img/apple-touch-icon-72x72.png" />
         </Helmet>
         <Row>
-        <Col sm>
+          <Col sm>
             <div className="filter-options">
-              <a href="/"><button className="feed-option"><BsHouse size={25} className="icon"/> Home</button></a><br/>
-              <a href="/top"><button className="feed-option-active"><BsBarChartFill  size={25} className="icon"/>  Top</button></a>
-              <a href="/explore"><button className="feed-option"><BiRocket  size={25} className="icon"/>  Explore</button></a>
-              <a href="/notifications"><button className="feed-option"><BsBell  size={25} className="icon"/>  Notifications</button></a>
-              <a href="/me"><button className="feed-option-avatar"><Avatar alt={this.state.user.fullname} src={this.state.user.pic}  roundedCircle class="avatar-feed"/><b>@{this.state.user.username}</b></button></a>
-              <br/><br/>
-              <CreatePost/>
+              <a href="/"><button className="feed-option"><BsHouse size={25} className="icon" /> Home</button></a><br />
+              <a href="/top"><button className="feed-option-active"><BsBarChartFill size={25} className="icon" />  Top</button></a>
+              <a href="/explore"><button className="feed-option"><BiRocket size={25} className="icon" />  Explore</button></a>
+              <a href="/notifications"><button className="feed-option"><BsBell size={25} className="icon" />  Notifications</button></a>
+              <a href="/leaderboard"><button className="feed-option"><AiOutlineTrophy size={30} className="icon" />  Leaderboard</button></a>
+              <a href="/search"><button className="feed-option"><BsSearch size={25} className="icon" />  Search</button></a>
+              <a href="/me"><button className="feed-option-avatar"><Image alt={this.state.user.fullname} src={this.state.user.pic} className="avatar-feed" /><b>@{this.state.user.username}</b></button></a>
+              <br /><br />
+              <CreatePost />
             </div>
-          </Col>  
-                  
+          </Col>
+
           <Col >
-            {this.state.isLoading && 
-            <div className="feed">
-                <Skeleton circle={true} height={30} width={30} style={{ marginRight: 10 }}  />
-                <Skeleton height={30} width={350} style={{ marginBottom: 10 }}  />
-                <Skeleton height={30} width={300} style={{ marginBottom: 10 }}  /><br/>
-                <Skeleton height={30} width={400} style={{ marginBottom: 10 }}  /><br/>
-            </div>}
+            {this.state.isLoading &&
+              <div className="feed">
+                <Skeleton circle={true} height={30} width={30} style={{ marginRight: 10 }} />
+                <Skeleton height={30} width={350} style={{ marginBottom: 10 }} />
+                <Skeleton height={30} width={300} style={{ marginBottom: 10 }} /><br />
+                <Skeleton height={30} width={400} style={{ marginBottom: 10 }} /><br />
+              </div>}
             {!this.state.isLoading && <div className="feed">{discussionList}</div>}
             <ScrollToTop showUnder={1000}>
-            <span><BsArrowUp size={25} /></span>
+              <span><BsArrowUp size={25} /></span>
             </ScrollToTop>
           </Col>
           <Col sm>
-          <Recommended /><Contributors />
+            <Recommended /><Contributors />
 
           </Col>
 
@@ -308,33 +315,33 @@ function CreatePost() {
 
   return (
     <div>
-        <div>
-            <button className="write-button" onClick={() => setModalShow(true)}>Write a post</button>
-            <MyVerticallyCenteredModal
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-            />
-        </div>
+      <div>
+        <button className="write-button" onClick={() => setModalShow(true)}>Write a post</button>
+        <MyVerticallyCenteredModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+        />
+      </div>
     </div>
   );
 }
 
 // MODEL HANDLE
 function MyVerticallyCenteredModal(props) {
-    return (
-      <Modal
-        {...props}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        textAlign="left"
-      >
-        <Modal.Header closeButton>
-          <h5>Write a post</h5>
-        </Modal.Header>
-        <Modal.Body>
-            <NewPost/>
-        </Modal.Body>
-      </Modal>
-    );
-  }
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      textAlign="left"
+    >
+      <Modal.Header closeButton>
+        <h5>Write a post</h5>
+      </Modal.Header>
+      <Modal.Body>
+        <NewPost />
+      </Modal.Body>
+    </Modal>
+  );
+}

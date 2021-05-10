@@ -9,7 +9,7 @@ import { BsCircleFill } from 'react-icons/bs';
 class Contributors extends React.Component {
 
  componentDidMount = () => {
-        axios.get('http://localhost:5000/users/get-users-radar')
+        axios.get('http://localhost:4000/users/get-users-radar')
         .then((response)=>{
             this.setState({users: response.data.users})
         })
@@ -48,9 +48,8 @@ class Contributors extends React.Component {
                     <a className="-recommended-item-a" href={"/u/?id="+user._id} style={{color:'black', fontWeight:'light'}}>
                     <div class="miniprofileCommunity">
                         <figure class="headshot">
-
-                            {user.pic == null &&<Image alt="" src={Default}  className="user-image-mini" roundedCircle />}
-                            {user.pic != null &&<Image alt="" src={user.pic}  className="user-image-mini" roundedCircle />}    
+                            {(user.pic == null || user.pic == "") &&<Image alt="" src={Default}  className="user-image-mini" roundedCircle />}
+                            {(user.pic != null && user.pic != "") &&<Image alt="" src={user.pic}  className="user-image-mini" roundedCircle />}    
                         </figure>
                         <section class="bio-box">
                             <span class="details"> 

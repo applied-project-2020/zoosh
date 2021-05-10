@@ -4,6 +4,7 @@ const aws = require( 'aws-sdk' );
 const multerS3 = require( 'multer-s3' );
 const multer = require('multer');
 const path = require( 'path' );
+const mongoose = require('mongoose');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -68,6 +69,10 @@ function checkFileType( file, cb ){
 
 discussions.post('/NewDiscussions', (req, res) => {
 
+    if(req.body.user_pic == null){
+        console.log("USER IMAGE LENGTH IS ZERO");
+    }
+
     DiscussionModel.create({
         user: req.body.user,
         user_id: req.body.user_id,
@@ -120,7 +125,7 @@ discussions.get('/get-discussions', (req, res, next) => {
         var query = DiscussionModel
         .find()
         .select(req.query.fields)
-        .sort({sort: -1})
+        .sort({'likes': -1})
         .limit(parseInt(req.query.limit));
 
         query.exec(function (err, data) {
@@ -138,28 +143,24 @@ discussions.get('/get-discussions', (req, res, next) => {
 discussions.get('/get-following-feed', (req, res, next) => {
 
     var following = req.query.ids.following;
-    var discussions = [];
 
-    for(var i = 0; i < following.length; i++) 
-    {
-        // Gets discussions for the given user ID
-        var query = DiscussionModel
-            .find({user_id: following[i]})
+    var query = DiscussionModel
+            .find({
+                user_id: { $in: following }
+            })
             .select('user society time full_pic user_pic title content likes comments user_id')
-            .sort({'likes': -1})
+            .sort({'time': -1})
         
         query.exec(function (err, data) {
             // Error check
             if (err) return next(err);
+            
+            console.log(data);
 
-            discussions.push(data);
-            if(discussions.length == following.length) {
-                res.json({
-                    discussions: data
-                });
-            }
+            res.json({
+                discussions: data
+            });
         });
-    }
 })
 
 discussions.get('/get-discussion-page', (req, res) => {
@@ -181,7 +182,7 @@ discussions.get('/get-discussion-page', (req, res) => {
 })
 
 discussions.get('/get-user-discussions', (req, res) => {
-
+    
     var sort = req.query.sort;
 
     if(req.query.fields)
@@ -204,7 +205,9 @@ discussions.get('/get-user-discussions', (req, res) => {
 
 })
 
-discussions.get('/get-society-discussions', (req, res) => {
+discussions.get('/get-society-discussions', (req, res, next) => {
+
+    console.log("ID = " + req.query.id);
 
     var sort = req.query.sort;
 
@@ -213,11 +216,11 @@ discussions.get('/get-society-discussions', (req, res) => {
         var query = DiscussionModel
         .find({society: req.query.society})
         .select(req.query.fields)
-        .sort({sort: -1})
-        .limit(parseInt(req.query.limit));
+        .sort({likes: -1})
 
         query.exec(function (err, data) {
             if (err) return next(err);
+            console.log(data);
             res.json({
                 discussions: data
             });
@@ -239,9 +242,7 @@ discussions.delete('/getDiscussions:id', (req, res) => {  //delete a discussion
 })
 
 discussions.post('/CreateComment', (req, res) => {
-
     DiscussionModel.findByIdAndUpdate(
-
         {
             _id: req.body._id
         }, {
@@ -253,9 +254,7 @@ discussions.post('/CreateComment', (req, res) => {
             new: true,
             runValidators: true
         },
-        //console.log('here now.' + req.body.post),
         function (err, result) {
-
             if (err) {
                 console.log("error" + err);
                 res.send(err)

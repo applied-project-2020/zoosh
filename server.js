@@ -13,7 +13,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 5000;
 
 // Access cluster through link
-const mongoDB = process.env.MONGO_DB;
+const mongoDB = process.env.MONGO_DB_URI;
 
 mongoose.connect(mongoDB, {
     useNewUrlParser: true,

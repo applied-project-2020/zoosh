@@ -18,9 +18,7 @@ export default class AccountSettings extends React.Component {
       picSrc: '',
       fullname: '',
       bio: '',
-      college: '',
-      course: '',
-      dob: '',
+      username: '',
       password: '',
       retype: '',
       updateUser: '',
@@ -32,9 +30,7 @@ export default class AccountSettings extends React.Component {
 
     this.onChangeFullname = this.onChangeFullname.bind(this);
     this.onChangeBio = this.onChangeBio.bind(this);
-    this.onChangeCollege = this.onChangeCollege.bind(this);
-    this.onChangeCourse = this.onChangeCourse.bind(this);
-    this.onChangeDob = this.onChangeDob.bind(this);
+    this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onChangeRetype = this.onChangeRetype.bind(this);
     this.onChangePicture = this.onChangePicture.bind(this);
@@ -49,9 +45,10 @@ export default class AccountSettings extends React.Component {
     this.setState({ id: this.user._id });
 
 
-    await axios.get('http://localhost:5000/users/get-user-details', {
+    await axios.get('http://localhost:4000/users/get-user-details', {
       params: {
-        id: this.user._id
+        id: this.user._id,
+        fields: 'fullname bio password pic username'
       }
     })
       .then((response) => {
@@ -73,19 +70,9 @@ export default class AccountSettings extends React.Component {
       bio: e.target.value
     });
   }
-  onChangeCollege(e) {
+  onChangeUsername(e) {
     this.setState({
-      college: e.target.value
-    });
-  }
-  onChangeCourse(e) {
-    this.setState({
-      course: e.target.value
-    });
-  }
-  onChangeDob(e) {
-    this.setState({
-      dob: e.target.value
+      username: e.target.value
     });
   }
   onChangePassword(e) {
@@ -144,9 +131,7 @@ export default class AccountSettings extends React.Component {
 
     var fullname = this.checkDetails(this.state.fullname, this.state.user.fullname);
     var bio = this.checkDetails(this.state.bio, this.state.user.bio);
-    var college = this.checkDetails(this.state.college, this.state.user.college);
-    var course = this.checkDetails(this.state.course, this.state.user.course);
-    var dob = this.checkDetails(this.state.dob, this.state.user.dob);
+    var username = this.checkDetails(this.state.username, this.state.user.username);
     var password = this.checkDetails(this.state.password, this.state.user.password);
     var pp = this.checkDetails(this.state.scaledImage, this.state.user.pic);
 
@@ -154,16 +139,14 @@ export default class AccountSettings extends React.Component {
       user_id: this.state.id,
       pic: pp,
       fullname: fullname,
+      username: username,
       bio: bio,
-      college: college,
-      course: course,
-      dob: dob,
       password: password
     };
 
-    axios.post('http://localhost:5000/users/edit-user-profile', updateUser)
+    axios.post('http://localhost:4000/users/edit-user-profile', updateUser)
       .then()
-      .catch(console.log("error"))
+      .catch(console.log("Error from route: http://localhost:4000/users/edit-user-profile"))
 
 
     this.user.pic = pp;
@@ -179,9 +162,7 @@ export default class AccountSettings extends React.Component {
       picSrc: '',
       fullname: '',
       bio: '',
-      college: '',
-      course: '',
-      dob: '',
+      username: '',
       password: '',
       retype: '',
       updateUser: '',
@@ -264,6 +245,12 @@ export default class AccountSettings extends React.Component {
                   <Form.Text className="text-muted">
                   </Form.Text>
                 </Form.Group>
+                <Form.Group controlId="formName">
+                  <Form.Label>Change Username</Form.Label>
+                  <Form.Control type="text" placeholder="Username" value={this.state.username} onChange={this.onChangeUsername} />
+                  <Form.Text className="text-muted">
+                  </Form.Text>
+                </Form.Group>
                 <Form.Group controlId="profilePic">
                   <Form.Label>Update Profile Picture</Form.Label>
                   <Form.Control type="file" placeholder="Profile Pic" onChange={this.onChangePicture} />
@@ -277,25 +264,6 @@ export default class AccountSettings extends React.Component {
                   </Form.Text>
                 </Form.Group>
               </div><br/>
-                
-                {/* <Form.Group controlId="formCollege">
-                  <Form.Label>Change College</Form.Label>
-                  <Form.Control multiline type="text" placeholder="College..." value={this.state.college} onChange={this.onChangeCollege} />
-                  <Form.Text className="text-muted">
-                  </Form.Text>
-                </Form.Group>
-                <Form.Group controlId="formCourse">
-                  <Form.Label>Change College Course</Form.Label>
-                  <Form.Control multiline type="text" placeholder="Course..." value={this.state.course} onChange={this.onChangeCourse} />
-                  <Form.Text className="text-muted">
-                  </Form.Text>
-                </Form.Group>
-                <Form.Group controlId="formDob">
-                  <Form.Label>Change Date of Birth</Form.Label>
-                  <Form.Control multiline type="text" placeholder="DOB..." value={this.state.dob} onChange={this.onChangeDob} />
-                  <Form.Text className="text-muted">
-                  </Form.Text>
-                </Form.Group> */}
               <div className="settings-container">
                 <h3>Account Security</h3><br/>          
                 <Form.Group controlId="formNewPassword">
@@ -314,7 +282,7 @@ export default class AccountSettings extends React.Component {
               
               <div style={{textAlign:'center'}}>
                 <button className="standard-button" variant="secondary" type="submit" >Save changes</button>
-                <a href="/home"><button className="settings-button-cancel" variant="primary" type="button" >Cancel</button></a>
+                <a href="/me"><button className="settings-button-cancel" variant="primary" type="button" >Cancel</button></a>
               </div>
               
             </Form>

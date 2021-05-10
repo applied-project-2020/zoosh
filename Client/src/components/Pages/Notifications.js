@@ -4,14 +4,13 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet'
 import moment from 'moment'
 import { Row, Col, Container, Image, Modal } from 'react-bootstrap'
-import Clapped from '../../images/clap-hands.png'
-import { BsTrash, BsHouse, BsBell, BsGem, BsBarChart } from "react-icons/bs";
+import { BsTrash, BsHouse, BsBell, BsSearch, BsBarChart } from "react-icons/bs";
 import {BiRocket} from 'react-icons/bi'
 import NewPost from './NewPost';
 import Recommended from '../Lists/Recommended'
 import Contributors from '../Lists/Contributors'
 import Skeleton from 'react-loading-skeleton';
-import Avatar from '@material-ui/core/Avatar';
+import {AiOutlineTrophy} from 'react-icons/ai'
 
 export default class Notifications extends React.Component {
 
@@ -33,7 +32,7 @@ export default class Notifications extends React.Component {
     var user = JSON.parse(localStorage.getItem('user'));
     this.getUserDetails();
 
-    await axios.get('http://localhost:5000/users/get-user-details', {
+    await axios.get('http://localhost:4000/users/get-user-details', {
       params: {
         id: user._id,
         fields: "notifications username pic"
@@ -53,7 +52,7 @@ export default class Notifications extends React.Component {
       });
     
     // Fetching the users notifications by searching the Notifications Model for documents containing the logged in users ID
-    await axios.get('http://localhost:5000/notifications/get-user-notifications', {
+    await axios.get('http://localhost:4000/notifications/get-user-notifications', {
         params: {
           notify_id: user._id,
           fields: 'user_id user_name user_pic time message discussion_id discussion_title ',
@@ -79,7 +78,7 @@ export default class Notifications extends React.Component {
     // Fetching the users Details
     getUserDetails() {
       var user = JSON.parse(localStorage.getItem('user'));
-      axios.get('http://localhost:5000/users/get-user-details', {
+      axios.get('http://localhost:4000/users/get-user-details', {
         params: {
           id: user._id,
           fields: 'forums societies likedPosts username pic'
@@ -100,7 +99,7 @@ export default class Notifications extends React.Component {
 
   deleteNotification(id){
 
-      axios.get('http://localhost:5000/notifications/deleteNotification',{
+      axios.get('http://localhost:4000/notifications/deleteNotification',{
         params: {
           _id:id,   
         }    
@@ -110,7 +109,7 @@ export default class Notifications extends React.Component {
 
 deleteAllNotification(){
   var user = JSON.parse(localStorage.getItem('user'));
-    axios.get('http://localhost:5000/notifications/deleteAllNotifications',{
+    axios.get('http://localhost:4000/notifications/deleteAllNotifications',{
       params: {
         id:user._id,   
       }    
@@ -145,7 +144,9 @@ window.location.reload();
               <a href="/top"><button className="feed-option"><BsBarChart  size={25} className="icon"/>  Top</button></a>
               <a href="/explore"><button className="feed-option"><BiRocket  size={25} className="icon"/>  Explore</button></a>
               <a href="/notifications"><button className="feed-option-active"><BsBell  size={25} className="icon"/>  Notifications</button></a>
-              <a href="/me"><button className="feed-option-avatar"><Avatar alt={this.state.user.fullname} src={this.state.user.pic}  roundedCircle class="avatar-feed"/><b>@{this.state.user.username}</b></button></a>
+              <a href="/leaderboard"><button className="feed-option"><AiOutlineTrophy size={30} className="icon" />  Leaderboard</button></a>
+              <a href="/search"><button className="feed-option"><BsSearch  size={25} className="icon"/>  Search</button></a>
+              <a href="/me"><button className="feed-option-avatar"><Image alt={this.state.user.fullname} src={this.state.user.pic}  className="avatar-feed"/><b>@{this.state.user.username}</b></button></a>
               <br/><br/>
               <CreatePost/>
             </div>
@@ -174,7 +175,7 @@ window.location.reload();
                   </div></a>
                {/* <button aria-label="add" className="standard-option-btn-post" onClick={() => { this.deleteNotification(notification._id) }}><BsXCircleFill size={30} /></button> */}
                </div> )}
-                <button aria-label="add" className="standard-option-btn-post" onClick={() => { this.deleteAllNotification() }}>Clear notifications  <BsTrash size={20} /></button>
+                <button aria-label="add" className="standard-option-btn-post" onClick={() => { this.deleteAllNotification() }}>Clear Notifications  <BsTrash size={20} /></button>
               </div>
             </Col>
             <Col sm>

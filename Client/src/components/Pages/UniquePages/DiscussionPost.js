@@ -6,18 +6,17 @@ import { Row, Col, Container,Form } from 'react-bootstrap';
 import moment from 'moment'
 import { Image } from 'react-bootstrap';
 import Avatar from '@material-ui/core/Avatar';
-import { BsBookmark, BsBookmarkFill, BsGem, BsHeart, BsHeartFill } from 'react-icons/bs'
-import Clapping from '../../../images/clap-hands.png'
-import Clap from '../../../images/clap.png'
-import { RiShieldStarLine } from 'react-icons/ri'
+import { BsBookmark, BsBookmarkFill, BsHeart, BsHeartFill } from 'react-icons/bs'
 import ShowMoreText from 'react-show-more-text';
 import cogoToast from 'cogo-toast'
+import Default from '../../../images/defaults/default5.jpg'
 
 export default class DiscussionPost extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      user: '',
       discussion: '',
       discussion_title:'',
       user_pic:'',
@@ -31,7 +30,7 @@ export default class DiscussionPost extends React.Component {
       hearts: 0,
       views: 0,
       isSaved: false,
-      comment: '',
+      comment: ''
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChangeComment = this.onChangeComment.bind(this);
@@ -40,16 +39,25 @@ export default class DiscussionPost extends React.Component {
   componentDidMount() {
     var id = new URLSearchParams(this.props.location.search).get("id");
 
+    if(!id) {
+      id = JSON.parse(window.sessionStorage.getItem("discussion_id"));
+      window.location += "id=" + id;
+    }
+    else
+      window.sessionStorage.setItem("discussion_id", JSON.stringify(id));
+
     this.getUserDetails();
-    axios.get('http://localhost:5000/discussions/get-discussion-page', {
+
+    axios.get('http://localhost:4000/discussions/get-discussion-page', {
       params: {
-        id: id,
+        id: id
       }
     })
       .then((response) => {
         console.log(response);
         this.setState({
           discussion: response.data.discussion,
+          user_pic: response.data.discussion.user_pic,
           comments: response.data.discussion.comments,
           isLoading: false,
         })
@@ -60,10 +68,14 @@ export default class DiscussionPost extends React.Component {
 
   }
   async getUserDetails() {
-    var user = JSON.parse(localStorage.getItem('user'));
-    await axios.get('http://localhost:5000/users/get-user-details', {
+    this.state.user = JSON.parse(localStorage.getItem('user'));
+    if(this.state.user.pic == null){
+      this.setState({user_pic: Default});
+    }
+
+    await axios.get('http://localhost:4000/users/get-user-details', {
       params: {
-        id: user._id,
+        id: this.state.user._id,
         fields: "likedPosts readingList"
       }
     })
@@ -96,12 +108,14 @@ export default class DiscussionPost extends React.Component {
 
   addToReadingList(discussion, user_id) {
 
+    this.setState({tempAdd: true});
+
     const addDiscussion = {
       user_id: user_id,
       discussion: discussion,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:5000/users/addToReadingList', addDiscussion)
+    axios.post('http://localhost:4000/users/addToReadingList', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -114,15 +128,19 @@ export default class DiscussionPost extends React.Component {
         <div>Added to your reading list!</div>
       </div>
     );
+
+    window.location.reload();
   }
   RemoveFromReadingList(discussion, user_id) {
+
+    this.setState({tempAdd: false});
 
     const RemovedDiscussion = {
       user_id: user_id,
       discussion: discussion,
     }
     // Adds society to societies array in user model.
-    axios.post('http://localhost:5000/users/removeFromReadingList', RemovedDiscussion)
+    axios.post('http://localhost:4000/users/removeFromReadingList', RemovedDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -136,6 +154,7 @@ export default class DiscussionPost extends React.Component {
       </div>
     );
 
+    window.location.reload();
   }
 
   addToLikedPosts(discussion, discussion_uID, user_id, likes, user_name, title, user_pic) {
@@ -147,7 +166,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/users/addToLikedPosts', addDiscussion)
+    axios.post('http://localhost:4000/users/addToLikedPosts', addDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -163,11 +182,11 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
       discussion_title: title,
       user_pic: user_pic,
-      message: "clapped to your post",
+      message: "liked your post",
       time: new Date().getTime()
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/notifications/notify', notify)
+    axios.post('http://localhost:4000/notifications/notify', notify)
       .then(function (resp) {
         console.log(resp);
       })
@@ -180,7 +199,7 @@ export default class DiscussionPost extends React.Component {
       likeCount: likes + 1
     }
     // alert(this.state.posts.likes);
-    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -191,13 +210,13 @@ export default class DiscussionPost extends React.Component {
   }
 
   RemovefromLikedPosts(discussion, user_id, likes) {
-
+    
     const removeDiscussion = {
       id: user_id,
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/users/removeFromLikedPosts', removeDiscussion)
+    axios.post('http://localhost:4000/users/removeFromLikedPosts', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
@@ -208,7 +227,7 @@ export default class DiscussionPost extends React.Component {
       discussion: discussion,
       likeCount: likes - 1
     }
-    axios.post('http://localhost:5000/discussions/UpdateLikeCount', UpdateLike)
+    axios.post('http://localhost:4000/discussions/UpdateLikeCount', UpdateLike)
       .then(function (resp) {
         console.log(resp);
       })
@@ -229,7 +248,6 @@ export default class DiscussionPost extends React.Component {
         time: new Date().getTime(),
         user_img: user.pic
       }
-
     }
     const notify = {
       user: user._id,
@@ -241,25 +259,28 @@ export default class DiscussionPost extends React.Component {
       message: "commented on post",
       time: new Date().getTime()
     }
-    axios.post('http://localhost:5000/discussions/CreateComment', newComment)
+    
+    axios.post('http://localhost:4000/discussions/CreateComment', newComment)
       .then()
       .catch();
 
-    axios.post('http://localhost:5000/notifications/notify', notify)
+    axios.post('http://localhost:4000/notifications/notify', notify)
       .then()
       .catch();
-    window.location.reload();
+    
+    // var loc = "/d/?id=" + this.state.discussion._id;
+    //window.location = window.location.href + loc;
   }
 
 
   isLiked(discussion_id, discussion_uID, user_id, likes, user_fullname, title, user_pic) {
     if (this.state.likedPosts.includes(discussion_id) === true) {
-      return (<span className="voting-btn"><button className="standard-option-btn-post" onClick={() => { this.RemovefromLikedPosts(discussion_id, user_id, likes) }}>
+      return (<span className="voting-btn"><button className="standard-reaction-btn-post" onClick={() => { this.RemovefromLikedPosts(discussion_id, user_id, likes) }}>
         <BsHeartFill size={25} style={{color:'rgb(255, 59, 48)'}} /> {this.state.discussion.likes}</button><br /></span>
       )
     }
     else {
-      return (<span className="voting-btn"><button aria-label="add" className="standard-option-btn-post" onClick={() => { this.addToLikedPosts(discussion_id, discussion_uID, user_id, likes, user_fullname, title, user_pic) }}>
+      return (<span className="voting-btn"><button aria-label="add" className="standard-reaction-btn-post" onClick={() => { this.addToLikedPosts(discussion_id, discussion_uID, user_id, likes, user_fullname, title, user_pic) }}>
         <BsHeart size={25} /> {this.state.discussion.likes} </button></span>
       )
     }
@@ -268,12 +289,12 @@ export default class DiscussionPost extends React.Component {
   isInReadingList(discussion_id, user_id) {
     if (this.state.readingList.includes(discussion_id) === true) {
       return (<span className="voting-btn">
-        <button aria-label="remove" className="standard-option-btn-post" onClick={() => { this.RemoveFromReadingList(discussion_id, user_id) }}><BsBookmarkFill size={30} /></button></span>
+        <button aria-label="remove" className="standard-reaction-btn-save" onClick={() => { this.RemoveFromReadingList(discussion_id, user_id) }}><BsBookmarkFill size={30} /></button></span>
       )
     }
     else {
       return (<span className="voting-btn">
-        <button aria-label="add" className="standard-option-btn-post" onClick={() => { this.addToReadingList(discussion_id, user_id) }}><BsBookmark size={30} /></button></span>
+        <button aria-label="add" className="standard-reaction-btn-save" onClick={() => { this.addToReadingList(discussion_id, user_id) }}><BsBookmark size={30} /></button></span>
       )
     }
   }
@@ -303,7 +324,8 @@ export default class DiscussionPost extends React.Component {
             <Col sm={2}>
               <div className="post-reactions">
                 <span>
-                  <Image alt="" src={user.pic} className="user-image"  roundedCircle/><br/><br/>
+                  {(this.state.discussion.user_pic != "" && this.state.discussion.user_pic != null) && <Image alt="" className="user-image" src={this.state.discussion.user_pic} roundedCircle />}
+                  {(this.state.discussion.user_pic == "" || this.state.discussion.user_pic == null) && <Image alt="" className="user-image" src={Default} roundedCircle />}
                   <b>{this.state.discussion.user}</b><br />
                   <a href={"/u/?id=" + this.state.discussion.user_id}><button aria-label="view" className="standard-button">View Profile</button></a>
                 </span>
@@ -335,7 +357,6 @@ export default class DiscussionPost extends React.Component {
                   <div className="post-reactions-mobile">
                     {this.isLiked(this.state.discussion._id, this.state.discussion.user_id, user._id, this.state.discussion.likes)}
                     {this.isInReadingList(this.state.discussion._id, user._id,)}
-                    <span className="voting-btn"><button aria-label="community" className="standard-option-btn-post" ><RiShieldStarLine size={30} /></button></span>
                   </div>
                 </span>
                 <hr />
@@ -345,7 +366,7 @@ export default class DiscussionPost extends React.Component {
                   <h4>Responses ({this.state.comments.length})</h4>
 
                   <div className="comment-box-acc">
-                    <Avatar alt="User" src={user.pic} /><br />
+                    <Avatar alt="User" src={this.state.discussion.user_pic} /><br />
                     <Form>
                       <label>
                         <textarea required rows={2} cols={40} className="comment-input" multiple placeholder="Leave a comment" value={this.state.comment} onChange={this.onChangeComment} />

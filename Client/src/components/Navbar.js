@@ -2,11 +2,10 @@ import React from 'react';
 import '../assets/App.css';
 import '../assets/Media.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, FormControl, Button,  Navbar, Nav, NavDropdown, Modal, Row, Col, Container, Dropdown} from 'react-bootstrap'
-import { BsTrash, BsHouse, BsBell, BsGem, BsBarChart, BsChat, BsTypeH1 } from "react-icons/bs";
+import { Navbar,  Row, Col, Container} from 'react-bootstrap'
+import {  BsHouse, BsBell, BsBarChart} from "react-icons/bs";
 import {BiRocket} from 'react-icons/bi'
 import axios from 'axios';
-import SearchbarFilter from '../components/Common/SearchbarFilter'
 
 export default class NavBar extends React.Component {
   constructor(props) {
@@ -31,7 +30,7 @@ export default class NavBar extends React.Component {
       this.setState({ id: user._id });
 
 
-      axios.get('http://localhost:5000/users/get-user-details', {
+      axios.get('http://localhost:4000/users/get-user-details', {
           params: {
               id: user._id,
               fields: 'pic fullname'
@@ -59,7 +58,6 @@ render(){
         </Col>  
                
           <Col>
-              <SearchbarFilter/>
           </Col>
           <Col sm>
           </Col>

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet'
 import History from './ProfilePostHistory'
 import Skeleton from 'react-loading-skeleton';
-import {BsFillCircleFill, BsBookmarkFill} from 'react-icons/bs'
+import {BsFillCircleFill, BsBookmarkFill, BsBoxArrowInLeft} from 'react-icons/bs'
 import Default from '../../images/defaults/default5.jpg'
 
 export default class MyProfile extends React.Component {
@@ -37,7 +37,7 @@ export default class MyProfile extends React.Component {
     var user = JSON.parse(localStorage.getItem('user'));
     // document.body.style.backgroundColor = "#F7F7F7";
 
-    await axios.get('http://localhost:5000/users/get-user-details', {
+    await axios.get('http://localhost:4000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'fullname username followers following likedPosts pic societies badges college time score'
@@ -53,7 +53,8 @@ export default class MyProfile extends React.Component {
           society_ids: response.data.user.societies,
           badges: response.data.user.badges,
           posts: response.data.user.posts,
-          likedPosts: response.data.user.likedPosts
+          likedPosts: response.data.user.likedPosts,
+          isLoading: false
         })
         console.log(this.state.societies);
       })
@@ -61,7 +62,7 @@ export default class MyProfile extends React.Component {
         console.log(error);
       });
 
-    axios.get('http://localhost:5000/discussions/get-user-discussions', {
+    axios.get('http://localhost:4000/discussions/get-user-discussions', {
       params: {
         id: user._id,
         fields: 'user society time thumbnail_pic title content likes comments user_id',
@@ -69,15 +70,17 @@ export default class MyProfile extends React.Component {
       }
     })
       .then((response) => {
-        if (this.state.post == undefined) {
-          this.setState({
-            posts: response.data.discussions
-          })
-        } else {
-          this.setState({
-            posts: this.state.posts.concat(response.data.discussions)
-          })
-        }
+        console.log(response);
+        this.setState({posts: response.data.discussions});
+        // if (this.state.post == undefined) {
+        //   this.setState({
+        //     posts: response.data.discussions
+        //   })
+        // } else {
+        //   this.setState({
+        //     posts: this.state.posts.concat(response.data.discussions)
+        //   })
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -91,7 +94,7 @@ export default class MyProfile extends React.Component {
 
     // Loops through society ID's and gets the data for each society.
     this.state.society_ids.map(society_id => (
-      axios.get('http://localhost:5000/societies/get-societies-page', {
+      axios.get('http://localhost:4000/societies/get-societies-page', {
         params: {
           id: society_id
         }
@@ -105,7 +108,7 @@ export default class MyProfile extends React.Component {
 
   async GetLikedPost(DiscussionID) {
     console.log("disc id = " + DiscussionID);
-    await axios.get('http://localhost:5000/discussions/get-discussion-page', {
+    await axios.get('http://localhost:4000/discussions/get-discussion-page', {
       params: {
         id: DiscussionID,
       }
@@ -163,8 +166,8 @@ export default class MyProfile extends React.Component {
                   <section class="bio-box">
                    <dl class="details"> 
                     <b className="user-name">{this.state.user.fullname}</b><a href="/settings"><button className="community-btn-a" >Edit Profile</button></a>
-                    <a href="/saved"><button className="community-btn-a" ><BsBookmarkFill size={20}/></button></a>
-                    <a href="/login"><button className="community-btn-s" onClick={() => { this.Logout() }}><BsBookmarkFill size={20}/>Sign Out</button></a><br/>
+                    <a href="/saved"><button className="community-btn-a" ><BsBookmarkFill size={20}/> Saved</button></a>
+                    <a href="/login"><button className="community-btn-s" onClick={() => { this.Logout() }}><BsBoxArrowInLeft size={20}/> Sign Out</button></a><br/>
 
                     <b>@{this.state.user.username}</b> <br/>
                     <span className="user-badge"><BsFillCircleFill/> Member</span>

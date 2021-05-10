@@ -177,23 +177,29 @@ users.get('/get-users', (req, res, next) => {
 // Gets one users details
 users.get('/get-user-details', (req, res, next) => {
 
+    var query;
+
     if (req.query.fields) {
-        var query = UserModel
+        query = UserModel
             .findById({
                 _id: req.query.id
             })
             .select(req.query.fields)
-
-        query.exec(function (err, data) {
-            if (err) return next(err);
-            res.json({
-                user: data
-            });
-        });
     } else {
-        console.log("MUST PASS IN REQUIRED FIELD VARIABLES TO ROUTE: /get-user-details");
+        query = UserModel
+            .findById({
+                _id: req.query.id
+            })
+            .select()
     }
 
+    // Executes query
+    query.exec(function (err, data) {
+        if (err) return next(err);
+        res.json({
+            user: data
+        });
+    });
 })
 
 users.get('/get-users-radar', (req, res) => {
@@ -267,20 +273,18 @@ users.get('/get-followed-users', (req, res, next) => {
 })
 
 users.post('/edit-user-profile', (req, res) => {
+    
+    console.log(req.body);
 
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         UserModel.findByIdAndUpdate({
                 _id: req.body.user_id,
             }, {
-                $addToSet: {
-                    pic: req.body.pic,
-                    fullname: req.body.fullname,
-                    bio: req.body.bio,
-                    college: req.body.college,
-                    course: req.body.course,
-                    dob: req.body.dob,
-                    password: hash
-                }
+                pic: req.body.pic,
+                fullname: req.body.fullname,
+                username: req.body.username,
+                bio: req.body.bio,
+                password: hash
             }, {
                 upsert: true,
                 new: true,
@@ -290,7 +294,7 @@ users.post('/edit-user-profile', (req, res) => {
             function (err, result) {
 
                 if (err) {
-                    console.log("error");
+                    console.log(err);
                     res.send(err)
                 } else {
                     if (result) {
@@ -663,35 +667,7 @@ users.post('/addToReadingList', (req, res) => {
         }
     )
 })
-users.post('/removeFromReadingList', (req, res) => {
-    UserModel.findByIdAndUpdate({
-            _id: req.body.user_id,
-        }, {
-            $pull: {
-                readingList: req.body.discussion
-            }
-        }, {
-            upsert: true,
-            new: true,
-            runValidators: true
-        },
 
-        function (err, result) {
-            console.log(result);
-            if (err) {
-                res.send(err)
-            } else {
-                if (result) {
-                    console.log(result);
-                    res.send(result)
-                } else {
-                    res.send("Already in reading list.");
-                }
-            }
-
-        }
-    )
-})
 
 users.post('/addToLikedPosts', (req, res) => {
     UserModel.findByIdAndUpdate({
@@ -755,7 +731,7 @@ users.post('/removeFromLikedPosts', (req, res) => {
 
 users.post('/removeFromReadinglist', (req, res) => {
     UserModel.findByIdAndUpdate({
-            _id: req.body.id,
+            _id: req.body.user_id,
         }, {
             $pull: {
                 readingList: req.body.discussion
@@ -775,7 +751,7 @@ users.post('/removeFromReadinglist', (req, res) => {
                     console.log(result);
                     res.send(result)
                 } else {
-                    res.send("Already in liked list.");
+                    res.send("Already in reading list.");
                 }
             }
 
@@ -923,37 +899,6 @@ users.post('/deleteSoc', (req, res) => { //delete user
 })
 
 
-users.post('/removeFromReadingList', (req, res) => { //delete user
-
-
-    UserModel.updateMany({
-            $pull: {
-                readingList: req.body.discussion_id
-
-            }
-        }, {
-            new: true
-        },
-        function (err, result) {
-
-            if (err) {
-                res.send(err)
-                console.log(err)
-            } else {
-                if (result) {
-                    console.log(result)
-                    res.send(result)
-                } else {
-                    res.send("User already exists");
-                }
-            }
-
-        }
-    )
-})
-
-
-
 users.post('/unfollow', (req, res) => { //delete user
 
 
@@ -983,6 +928,39 @@ users.post('/unfollow', (req, res) => { //delete user
         }
     )
 })
+
+
+
+users.post('/removeUserFromSoc', (req, res) => { //delete user
+
+
+    UserModel.updateOne({
+            _id: req.body.user,
+        }, {
+            $pull: {
+                societies: req.body.society
+            }
+        }, {
+            new: true
+        },
+        function (err, result) {
+
+            if (err) {
+                res.send(err)
+                console.log(err)
+            } else {
+                if (result) {
+                    console.log(result)
+                    res.send(result)
+                } else {
+                    res.send("User already exists");
+                }
+            }
+
+        }
+    )
+})
+
 
 
 users.post('/DeleteFollower', (req, res) => { //delete user

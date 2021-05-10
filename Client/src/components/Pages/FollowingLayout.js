@@ -10,11 +10,11 @@ import moment from 'moment'
 import Skeleton from 'react-loading-skeleton';
 import Button from '@material-ui/core/Button';
 import ScrollToTop from 'react-scroll-up'
-import { BsPersonFill, BsChat, BsArrowUp, BsBell, BsBarChart, BsHeart,BsHouse} from 'react-icons/bs'
+import { BsSearch, BsChat, BsArrowUp, BsBell, BsBarChart, BsHeart,BsHouse} from 'react-icons/bs'
 import { Helmet } from 'react-helmet'
 import {BiRocket} from 'react-icons/bi'
 import NewPost from './NewPost';
-import Avatar from '@material-ui/core/Avatar';
+import {AiOutlineTrophy} from 'react-icons/ai'
 
 // Allows array of following ids to be passed as params
 var qs = require('qs');
@@ -43,18 +43,19 @@ export default class Feed extends React.Component {
   // Fetching the users Details
   getUserDetails() {
       var user = JSON.parse(localStorage.getItem('user'));
-      axios.get('http://localhost:5000/users/get-user-details', {
+      axios.get('http://localhost:4000/users/get-user-details', {
         params: {
           id: user._id,
-          fields: 'forums societies likedPosts username pic'
+          fields: 'forums societies likedPosts username pic following'
         }
       })
         .then((response) => {
           this.setState({
             user: response.data.user,
-            forums: response.data.user.forums,
             socs: response.data.user.societies,
-            likedPosts: response.data.user.likedPosts
+            likedPosts: response.data.user.likedPosts,
+            following: response.data.user.following
+
           })
         })
         .catch((error) => {
@@ -76,7 +77,7 @@ export default class Feed extends React.Component {
   {
     var user = JSON.parse(localStorage.getItem('user'));
 
-    axios.get('http://localhost:5000/users/get-followed-users', {
+    axios.get('http://localhost:4000/users/get-followed-users', {
       params: {
         id: user._id,
       }
@@ -86,7 +87,8 @@ export default class Feed extends React.Component {
           following: response.data.users,
         })
         // After getting array of id's, get posts.
-        this.GetFollowingPosts();
+        if(this.state.following.length !== 0)
+          this.GetFollowingPosts();
       })
       .catch((error) => {
         console.log(error);
@@ -96,7 +98,7 @@ export default class Feed extends React.Component {
   // Gets the posts made by the array of followed user ID's
   GetFollowingPosts()
   {
-    axios.get('http://localhost:5000/discussions/get-following-feed', {
+    axios.get('http://localhost:4000/discussions/get-following-feed', {
       params: {
         ids: this.state.following
       },
@@ -105,10 +107,13 @@ export default class Feed extends React.Component {
       }
     })
     .then((response) => {
-        this.setState({
+        console.log(response.data.discussions);
+
+        this.setState({ 
           posts: response.data.discussions,
-          isLoading: false,
-        }) 
+          isLoading: false
+         });
+         
     })
     .catch((error) => {
       console.log(error);
@@ -135,7 +140,7 @@ export default class Feed extends React.Component {
       Post_id: post_id
     }
     alert(post_id);
-    axios.post('http://localhost:5000/users/deletePost', deletedPost)
+    axios.post('http://localhost:4000/users/deletePost', deletedPost)
       .then().catch();
   }
 
@@ -147,18 +152,18 @@ export default class Feed extends React.Component {
       return (
         <Fragment key={discussion._id}>
         <a href={"/d/?id=" + discussion._id} className="miniprofile-post-redirect"><div class="card">
-          {discussion.full_pic && <Image src={discussion.full_pic} className="post-img" width="500px" height="250px"/>}
+          {discussion.full_pic && <Image src={discussion.full_pic} className="post-img" />}
           <div class="container">
             <h3><b>{discussion.title}</b></h3> 
-            <p className="nowrap"> <Image alt="" className="profile-btn-wrapper-left" src={discussion.user_pic}  roundedCircle /><b> @{discussion.username}</b></p> 
-            <span>Posted in <b style={{ color: 'green' }}>
+            <p className="nowrap"> <Image alt="" className="profile-btn-wrapper-left" src={discussion.user_pic}  roundedCircle /></p> 
+            <span><b> {discussion.user}</b> Posted in <b style={{ color: 'green' }}>
             {discussion.society == null ? (
               <span> <b style={{ color: 'green' }}>General</b></span>
                ) : (
               <span> <b style={{ color: 'green' }}>{discussion.society}</b></span>
               )}<br />
               </b></span><br/>
-            <span style={{ color: 'gray', fontSize: 10 }}>({moment(discussion.time).startOf('seconds').fromNow()})</span><br/>
+            <span style={{ color: 'gray', fontSize: 10 }}>({moment(discussion.time).startOf('seconds').fromNow()})</span><br/><hr/>
             <span className="reactions">
               <a href={"/d/?id=" + discussion._id}><button className="reaction-button" size="small" color="primary">
                 <span> <BsHeart  size={20} alt=""  className="icon"/> {discussion.likes}</span>
@@ -197,7 +202,9 @@ export default class Feed extends React.Component {
               <a href="/top"><button className="feed-option"><BsBarChart  size={25} className="icon"/>  Top</button></a>
               <a href="/explore"><button className="feed-option"><BiRocket  size={25} className="icon"/>  Explore</button></a>
               <a href="/notifications"><button className="feed-option"><BsBell  size={25} className="icon"/>  Notifications</button></a>
-              <a href="/me"><button className="feed-option-avatar"><Avatar alt={this.state.user.fullname} src={this.state.user.pic}  roundedCircle class="avatar-feed"/><b>@{this.state.user.username}</b></button></a>
+              <a href="/leaderboard"><button className="feed-option"><AiOutlineTrophy size={30} className="icon" />  Leaderboard</button></a>
+              <a href="/search"><button className="feed-option"><BsSearch  size={25} className="icon"/>  Search</button></a>
+              <a href="/me"><button className="feed-option-avatar"><Image alt={this.state.user.fullname} src={this.state.user.pic}  className="avatar-feed"/><b>@{this.state.user.username}</b></button></a>
               <br/><br/>
               <CreatePost/>
             </div>
@@ -210,6 +217,11 @@ export default class Feed extends React.Component {
                 <Skeleton height={30} width={350} style={{ marginBottom: 10 }}  />
                 <Skeleton height={30} width={300} style={{ marginBottom: 10 }}  /><br/>
                 <Skeleton height={30} width={400} style={{ marginBottom: 10 }}  /><br/>
+            </div>}
+            {this.state.user.following == 0  && 
+            <div class="card4">
+              <h4>It's pretty quiet in here...</h4>
+              <a href="/users"><button className="community-btn-b">Find Friends</button></a>
             </div>}
             {!this.state.isLoading && <div className="feed">{discussionList}</div>}
             <ScrollToTop showUnder={1000}>

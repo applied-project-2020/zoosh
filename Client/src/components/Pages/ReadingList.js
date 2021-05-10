@@ -26,7 +26,7 @@ export default class ReadingList extends React.Component {
     var user = JSON.parse(localStorage.getItem('user'));
     // document.body.style.backgroundColor = "#F7F7F7";
 
-    await axios.get('http://localhost:5000/users/get-user-details', {
+    await axios.get('http://localhost:4000/users/get-user-details', {
       params: {
         id: user._id,
         fields: 'readingList '
@@ -49,7 +49,7 @@ export default class ReadingList extends React.Component {
   }
 
   async GetReadingList(readingList) {
-    await axios.get('http://localhost:5000/discussions/get-discussion-page', {
+    await axios.get('http://localhost:4000/discussions/get-discussion-page', {
       params: {
         id: readingList,
       }
@@ -79,7 +79,7 @@ export default class ReadingList extends React.Component {
       discussion: discussion,
     }
     // Adds the discussion to liked list
-    axios.post('http://localhost:5000/users/removeFromReadingList', removeDiscussion)
+    axios.post('http://localhost:4000/users/removeFromReadingList', removeDiscussion)
       .then(function (resp) {
         console.log(resp);
       })
